@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    My Blog
+{% endblock  %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static "posts.css" %}" />   
+    <link rel="stylesheet" href="{% static "index.css" %}" />
+{% endblock  %}
+
+{% block content %}
+<header id="main-navigation">
+    <h1><a href="{% url "posts-page"%}"> Diana's Blog </h1>
+    <nav><a href="{% url "posts-page"%}"> All Posts </nav>
+</header>
+
+
+<section id="welcome">
+    <header>
+        <img src="{% static "Diana.png" %}" alt="Diana - The Author Of This Blog" />
+        <h2> DIANA'S BLOG</h2>
+    </header>
+        <p> Hi, I am Diana, I love to blog about tech and the world! </p>
+</section>
+
+<section id="latest-posts">
+    <h2> My Latest Thoughts </h2>
+
+    <ul>
+        {% for post in posts %}
+            {% include "includes/posts.html" %}
+        {% endfor %}
+        </p>
+    </ul>
+
+</section>
+
+<section id="about">
+    <h2>What I Do</h2>
+    <p>
+        I love programming. 
+        I love to help others and 
+        I enjoy exploring new
+        technologies in general!
+    </p>
+    <p>
+        My goal is to keep on gowing as a developer - 
+        and if I could help you do the same, I'd be very happy!
+    </p>
+</section>
+
+{% endblock  %}
+

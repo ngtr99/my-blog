@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static "detailed-posts.css" %}" />
+{% endblock  %}
+
+{% block title %} This Post Title {% endblock  %}
+
+{% block content %}
+
+    <header id="main-navigation">
+        <h1><a href="{% url "starting-page"%}"> Diana's Blog </h1>
+        <nav><a href="{% url "posts-page"%}"> All Posts </nav>
+    </header>
+
+    <div class="images">
+        <center><img src="{% static "images/"|add:post.image_name %}" alt="{{post.title}}"/></center>
+    </div>
+    <div class="content">
+        <h3>{{post.title}}</h3>
+        <p>{{post.content}}</p>
+    </div>
+
+{% endblock  %}
+
