@@ -5,51 +5,39 @@
     My Blog
 {% endblock  %}
 
-{% block css_files %}
-    <link rel="stylesheet" href="{% static "posts.css" %}" />   
+{% block css_files %} 
     <link rel="stylesheet" href="{% static "index.css" %}" />
 {% endblock  %}
 
 {% block content %}
 <header id="main-navigation">
-    <h1><a href="{% url "posts-page"%}"> Diana's Blog </h1>
-    <nav><a href="{% url "posts-page"%}"> All Posts </nav>
+    <nav><a href="{% url "all-posts"%}"> All Posts </a></nav>
 </header>
 
 
 <section id="welcome">
     <header>
-        <img src="{% static "Diana.png" %}" alt="Diana - The Author Of This Blog" />
+        <img src="{% static "Diana.png" %}"/>
         <h2> DIANA'S BLOG</h2>
     </header>
-        <p> Hi, I am Diana, I love to blog about tech and the world! </p>
+        <p style="font-size: 1rem;"> Hi, I am Diana, Hello! My name is Nguyet, and I’m a passionate web developer with a love for creating clean, user-friendly, and visually appealing websites. I enjoy bringing ideas to life through code — combining creativity with technical problem-solving. My current focus is on Django, Python, and MongoDB, where I’m learning how to build and deploy full-stack web applications. When I’m not coding, I love exploring new design trends, improving my skills, and finding inspiration for my next project. My goal is to keep growing as a developer and to create digital experiences that make a positive impact. </p>
 </section>
 
 <section id="latest-posts">
     <h2> My Latest Thoughts </h2>
 
     <ul>
-        {% for post in posts %}
-            {% include "includes/posts.html" %}
+        {% for post in posts|slice:":3" %}
+            <li>
+                {% if post.image %}
+                    {% include "blog/includes/posts.html" %}
+                {% endif %}
+            </li>
         {% endfor %}
-        </p>
     </ul>
 
 </section>
 
-<section id="about">
-    <h2>What I Do</h2>
-    <p>
-        I love programming. 
-        I love to help others and 
-        I enjoy exploring new
-        technologies in general!
-    </p>
-    <p>
-        My goal is to keep on gowing as a developer - 
-        and if I could help you do the same, I'd be very happy!
-    </p>
-</section>
 
 {% endblock  %}
 

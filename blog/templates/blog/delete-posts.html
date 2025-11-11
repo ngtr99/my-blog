@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'posts.css' %}" />
+{% endblock %}  
+
+{% block title %}
+    Delete Post
+{% endblock  %}
+
+{% block content %}
+<div class="delete-post-container" style="max-width:700px;margin:2rem auto;padding:0 1rem;">
+    <div class="card" style="border:1px solid #e3e3e3;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.03);overflow:hidden;">
+        <div class="card-header" style="background:#fafafa;padding:1rem 1.25rem;border-bottom:1px solid #eee;">
+            <h2 style="margin:0;font-size:1.25rem;color:#c62828;">Delete Post</h2>
+            <small style="color:#666;">Confirm removal of this post</small>
+        </div>
+
+        <div class="card-body" style="padding:1.25rem;">
+            <h3 style="margin-top:0;margin-bottom:0.5rem;font-size:1.1rem;color:#222;">{{ post.title }}</h3>
+            {% if post.created_at %}
+                <p style="margin:0 0 1rem;color:#888;font-size:0.9rem;">Posted on {{ post.created_at|date:"F j, Y" }}</p>
+            {% endif %}
+
+            <p style="margin:0 0 1.25rem;color:#333;">
+                Are you sure you want to permanently delete this post? This action cannot be undone.
+            </p>
+
+            <form method="post" style="display:flex;gap:0.5rem;align-items:center;">
+                {% csrf_token %}
+                <button type="submit" style="background:#d32f2f;color:#fff;border:none;padding:0.5rem 0.9rem;border-radius:4px;cursor:pointer;">
+                    Yes, Delete
+                </button>
+                <a href="{% url 'all-posts' %}" style="display:inline-block;padding:0.45rem 0.85rem;border-radius:4px;background:#f0f0f0;color:#333;text-decoration:none;border:1px solid #e0e0e0;">
+                    Cancel
+                </a>
+            </form>
+
+            {% if message %}
+                <div style="margin-top:1rem;padding:0.6rem 0.9rem;background:#fff3f3;border:1px solid #f5c6cb;color:#8a1f1f;border-radius:4px;">
+                    {{ message }}
+                </div>
+{% endif %}
+{% endblock  %}

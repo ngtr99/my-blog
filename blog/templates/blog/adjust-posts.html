@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'posts.css' %}" />
+
+{% endblock %}
+
+{% block title %}
+    Edit Post
+{% endblock  %}
+
+{% block content %}
+<h2>Edit Post</h2>
+<form method="post" enctype="multipart/form-data" class="edit-form" style="max-width:800px;margin:24px auto;padding:20px;background:#fafafa;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+    {% csrf_token %}
+    <h3 style="margin-top:0;margin-bottom:12px;color:#333;font-weight:600;">Update Post</h3>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div>
+            <label for="title" style="display:block;font-size:0.9rem;margin-bottom:6px;color:#555;">Title</label>
+            <input id="title" type="text" name="title" placeholder="Enter title" required
+                   value="{{ post.title|default:'' }}"
+                   style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:6px;font-size:0.95rem;background:#fff;">
+        </div>
+
+        <div>
+            <label for="location" style="display:block;font-size:0.9rem;margin-bottom:6px;color:#555;">Location</label>
+            <input id="location" type="text" name="location" placeholder="Enter location" required
+                   value="{{ post.location|default:'' }}"
+                   style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:6px;font-size:0.95rem;background:#fff;">
+        </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+        <label for="description" style="display:block;font-size:0.9rem;margin-bottom:6px;color:#555;">Description</label>
+        <textarea id="description" name="description" placeholder="Write description" required
+                  style="width:100%;min-height:120px;padding:10px;border:1px solid #e0e0e0;border-radius:6px;font-size:0.95rem;background:#fff;">{{ post.description|default:'' }}</textarea>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+        <div style="flex:1;min-width:160px;">
+            <label for="date" style="display:block;font-size:0.9rem;margin-bottom:6px;color:#555;">Date</label>
+            <input id="date" type="date" name="date" required
+                   value="{{ post.date|date:'Y-m-d' }}"
+                   style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:6px;font-size:0.95rem;background:#fff;">
+        </div>
+
+        <div style="flex:1;min-width:220px;">
+            <label for="image" style="display:block;font-size:0.9rem;margin-bottom:6px;color:#555;">Image (optional — leave to keep current)</label>
+            <input id="image" type="file" name="image" accept="image/*"
+                   style="width:100%;padding:6px;border:1px dashed #e0e0e0;border-radius:6px;font-size:0.95rem;background:#fff;">
+        </div>
+
+        {% if post.image %}
+            <div style="display:flex;align-items:center;gap:12px;margin-left:auto;">
+                <div style="font-size:0.85rem;color:#666;">Current</div>
+                <img src="{{ post.image.url }}" alt="Current image" style="max-height:72px;border-radius:6px;object-fit:cover;border:1px solid #eaeaea;">
+            </div>
+        {% endif %}
+    </div>
+
+    <div style="text-align:right;">
+        <button type="submit" style="background:#0070f3;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-weight:600;cursor:pointer;">
+            Save Changes
+        </button>
+    </div>
+</form>
+{% if message %}
+    <p style="color: red;">{{ message }}</p>
+{% endif %}
+<a href="{% url 'all-posts' %}" style="position:fixed;right:20px;bottom:20px;background:#fff;color:#0070f3;padding:10px 14px;border-radius:8px;border:1px solid #e6e6e6;box-shadow:0 6px 18px rgba(0,0,0,0.06);text-decoration:none;font-weight:600;z-index:9999;">
+    Back to All Posts
+</a>
+{% endblock  %}

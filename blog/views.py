@@ -1,65 +1,69 @@
 from datetime import date
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Post
 
+def index(request):
+    latest_posts = Post.objects.order_by('-date')
+    return render(request, 'blog/index.html', {'posts': latest_posts})
 
-#all_posts = [     
+def all_posts(request):
+    posts = Post.objects.all().order_by('-date')
+    return render(request, 'blog/all-posts.html', {'posts': posts})
 
-    #{
-    #    "slug": "hike-in-the-mountains",
-    #    "image": "mountain.png",
-    #    "author": "Diana",
-    #    "date": date(2025, 2, 16),
-    #    "title": "Mountain Hiking",
-    #    "excerpt": "There is nothing like the views you get when hiking in the mountains! And I was not prepared for what happened whilst I was enjoying the view!",
-    #    "content": "This is a big mountain!"
-    #},
-    #{
-    #    "slug": "exploring-the-forest",
-    #    "image": "forest.png",
-    #    "author": "John",
-    #   "date": date(2025, 1, 10),
-    #    "title": "Exploring the Deep Forest",
-    #    "excerpt": "The forest is full of mysteries! I had no idea what I would find when I wandered deeper...",
-    #    "content": "The trees were tall, and the air was fresh..."
-    #},
-    #{
-    #    "slug": "beach-walk-at-sunset",
-    #    "image": "beach.png",
-    #    "author": "Emily",
-    #    "date": date(2024, 12, 5),
-    #    "title": "Beach Walk at Sunset",
-    #    "excerpt": "Walking on the beach at sunset is a magical experience. The sky was painted in beautiful colors!",
-    #    "content": "The waves were crashing gently as the sun dipped below the horizon..."
-    #}
-#]
+def post_detail(request, id):
+    post = get_object_or_404(Post, id=id)
+    return render(request, 'blog/detailed-posts.html', {'post': post})
 
-def starting_page(request):
-    #sorted_posts = sorted(all_posts, key=lambda post: post["date"], reverse=True)  # Sort newest to oldest
-    #latest_posts = sorted_posts[:3]  # Get the 3 most recent posts
+def add_post(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        location = request.POST.get('location')
+        description = request.POST.get('description')
+        image = request.FILES.get('image')
+        date = request.POST.get('date')
 
-    latest_posts = Post.objects.all().order_by("-date")[:3]
+        # Validate fields
+        if not all([title, location, description, image, date]):
+            message = 'All fields are required'
+            return render(request, 'blog/add-posts.html', {'message': message})
 
-    return render(request, "blog/index.html", {
-        "posts": latest_posts
-    })
+        # Create a new post linked to the logged-in owner
+        post = Post(
+            title=title,
+            location=location,
+            description=description,
+            image=image,
+            date=date
+        )
+        post.save()
+        message = 'Post added successfully'
+        return render(request, 'blog/add-posts.html', {'message': message})
 
+    return render(request, 'blog/add-posts.html')
 
-def posts(request):
-    post = Post.objects.all().order_by("-date")
-    return render(request, "blog/all-posts.html", {
-        "all_posts": post
-    })
+def delete_post(request, id):
+    post = get_object_or_404(Post, id=id)
 
-    #return render (request, "blog/all-posts.html")
+    if request.method == 'POST':
+        post.delete()
+        message = 'Post deleted successfully'
+        return render(request, 'blog/index.html', {'post': post, 'message': message})
+    else:
+        message = 'You can not delete this post'
+        return render(request, 'blog/delete-posts.html', {'post': post, 'message': message})
 
+def edit_post(request, id):
+    post = get_object_or_404(Post, id=id)
 
-def post_detail(request, slug):
-    post = Post.objects.get(slug=slug)
-    return render(request, "blog/detailed-posts.html", {
-        "post": post,
-        "post_tags": post.tags.all()
-    })
-    
-    
-    #return render (request, "blog/detailed-posts.html")
+    if request.method == 'POST':
+        post.title = request.POST.get('title')
+        post.location = request.POST.get('location')
+        post.description = request.POST.get('description')
+        post.image = request.FILES.get('image')
+        post.date = request.POST.get('date')
+        post.save()
+        message = 'Post updated successfully'
+        return render(request, 'blog/adjust-posts.html', {'post': post, 'message': message})
+    else:
+        message = 'You can not edit the post details'
+        return render(request, 'blog/adjust-posts.html', {'post': post, 'message': message})

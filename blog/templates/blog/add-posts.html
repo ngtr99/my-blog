@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+    Add New Post
+{% endblock  %}
+
+{% block content %}
+<h2>Add New Post</h2>
+<style>
+.form-card {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(720px, calc(100% - 48px));
+    max-width: 720px;
+    background: #ffffff;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    margin: 12px 0;
+    margin: 24px auto;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+.form-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.form-field {
+    flex: 1 1 220px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+    color: #333;
+}
+input[type="text"],
+input[type="date"],
+textarea,
+input[type="file"] {
+    padding: 10px 12px;
+    border: 1px solid #d6d6d6;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+input:focus, textarea:focus {
+    border-color: #6ca0ff;
+    box-shadow: 0 0 0 4px rgba(108,160,255,0.08);
+}
+textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+.btn-primary {
+    background: linear-gradient(180deg,#2563eb,#1e4fd8);
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.btn-primary:hover { opacity: 0.95; }
+.image-preview {
+    max-width: 160px;
+    max-height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e6e6e6;
+    margin-top: 8px;
+}
+.small-note {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 6px;
+}
+</style>
+
+<form method="post" enctype="multipart/form-data" class="form-card">
+        {% csrf_token %}
+        <div class="form-row">
+                <div class="form-field">
+                        <label for="title">Title</label>
+                        <input id="title" type="text" name="title" placeholder="Enter title" required>
+                </div>
+
+                <div class="form-field">
+                        <label for="location">Location</label>
+                        <input id="location" type="text" name="location" placeholder="City, place, etc." required>
+                </div>
+        </div>
+
+        <div class="form-field">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" placeholder="Write a short description..." required></textarea>
+        </div>
+
+        <div class="form-row" style="align-items:flex-end;">
+                <div class="form-field" style="flex:0 0 220px;">
+                        <label for="image">Image</label>
+                        <input id="image" type="file" name="image" accept="image/*" required>
+                        <img id="imgPreview" class="image-preview" alt="Image preview" style="display:none;">
+                        <div class="small-note">PNG, JPG, GIF — max recommended 2MB</div>
+                </div>
+
+                <div class="form-field" style="flex:0 0 160px;">
+                        <label for="date">Date</label>
+                        <input id="date" type="date" name="date" required>
+                </div>
+        </div>
+
+        <div style="margin-top:10px;">
+                <button type="submit" class="btn-primary">Add Post</button>
+        </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const fileInput = document.getElementById('image');
+    const preview = document.getElementById('imgPreview');
+    if (!fileInput) return;
+    fileInput.addEventListener('change', function(){
+        const file = this.files && this.files[0];
+        if (!file) {
+            preview.style.display = 'none';
+            preview.src = '';
+            return;
+        }
+        if (!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = function(e){
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+});
+</script>
+{% if message %}
+    <p style="color: red;">{{ message }}</p>
+{% endif %}
+<a href="{% url 'all-posts' %}" class="btn-primary" style="position:fixed; right:20px; bottom:20px; z-index:999; text-decoration:none; display:inline-block;">
+    Back to All Posts
+</a>
+{% endblock  %}
