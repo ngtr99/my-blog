@@ -13,7 +13,44 @@
                         <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width:320px; max-width:35%; height:auto; object-fit:cover; border-radius:6px; flex-shrink:0;" />
                     {% endif %}
                     <h3 style="font-size:28px; margin:0 0 8px;">{{ post.title }}</h3>
-                    <p style="font-size:16px; margin:0 0 8px;">{{ post.description }}</p>
+                    <div class="post-description" style="max-height:72px; overflow:hidden; transition:max-height .2s ease;">
+                        <p style="font-size:16px; margin:0 0 8px;">{{ post.description }}</p>
+                        <button type="button" class="toggle-desc" data-expanded="false" aria-expanded="false"
+                                style="background:none;border:none;color:#0366d6;cursor:pointer;padding:0;font-size:14px;margin-top:6px;">
+                            Show more
+                        </button>
+                    </div>
+                    <script>
+                    (function(){
+                        const script = document.currentScript;
+                        const wrap = script.previousElementSibling;
+                        const btn = wrap.querySelector('.toggle-desc');
+                        const collapsedPx = 72;
+
+                        // Hide button if content fits
+                        if (wrap.scrollHeight <= collapsedPx) {
+                            btn.style.display = 'none';
+                            return;
+                        }
+
+                        wrap.style.maxHeight = collapsedPx + 'px';
+
+                        btn.addEventListener('click', function () {
+                            const expanded = btn.getAttribute('data-expanded') === 'true';
+                            if (expanded) {
+                                wrap.style.maxHeight = collapsedPx + 'px';
+                                btn.textContent = 'Show more';
+                                btn.setAttribute('data-expanded', 'false');
+                                btn.setAttribute('aria-expanded', 'false');
+                            } else {
+                                wrap.style.maxHeight = wrap.scrollHeight + 'px';
+                                btn.textContent = 'Show less';
+                                btn.setAttribute('data-expanded', 'true');
+                                btn.setAttribute('aria-expanded', 'true');
+                            }
+                        });
+                    })();
+                    </script>
                     <p style="font-size:14px; color:#666; margin:0 0 4px;">{{ post.date }}</p>
                     <p style="font-size:14px; color:#666; margin:0;">{{ post.location }}</p>
                 </div>
