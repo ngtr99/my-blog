@@ -4,7 +4,7 @@ from django.db import models
 
 class Post(models.Model):
     # models.py
-    image = models.ImageField(upload_to="images/")
+    image = models.URLField(max_length=200, blank=True, null=True)
     title = models.CharField(max_length=200)
     date = models.DateField()
     location = models.CharField(max_length=255)
