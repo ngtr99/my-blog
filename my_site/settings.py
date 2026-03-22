@@ -1,18 +1,16 @@
-# settings.py (cleaned)
-
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from mongoengine import connect
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")  # loads .env next to manage.py
+load_dotenv(BASE_DIR / ".env")
 
 # ---- Core ----------------------------------------------------
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # ---- Apps & Middleware --------------------------------------
 INSTALLED_APPS = [
@@ -41,8 +39,6 @@ ROOT_URLCONF = "my_site.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        # Tip: APP_DIRS=True already picks up blog/templates/blog.
-        # Keep this if you also have project-level templates:
         "DIRS": [BASE_DIR / "my_site" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -58,36 +54,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "my_site.wsgi.application"
 
-# ---- Databases ----------------------------------------------
-# Django’s internal tables (admin/auth) stay on SQLite:
+# ---- Database: Supabase PostgreSQL --------------------------
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True,
+    )
 }
-
-# MongoDB Atlas for your app data via MongoEngine:
-MONGODB_URI = os.getenv("MONGODB_URI")
-if MONGODB_URI:
-    connect(host=MONGODB_URI, alias="default")
-else:
-    # Don’t print in production; log if desired.
-    pass
 
 # ---- Static / Media -----------------------------------------
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
-    BASE_DIR / "blog" / "static",        
+    BASE_DIR / "blog" / "static",
     BASE_DIR / "my_site" / "static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Django 5+ preferred way to set WhiteNoise storage
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# User uploads (if you have ImageField/FileField)
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # ---- Misc ----------------------------------------------------
@@ -97,5 +83,4 @@ USE_I18N = True
 USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# If behind a proxy/Render, ensure HTTPS detection:
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
