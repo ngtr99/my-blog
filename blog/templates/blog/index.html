@@ -24,18 +24,15 @@
 </section>
 
 <section id="latest-posts">
-    <h2> My Latest Thoughts </h2>
+    <h2>My Latest Thoughts</h2>
 
     <ul>
         {% for post in posts|slice:":3" %}
-            <li>
-                {% if post.image %}
-                    {% include "blog/includes/posts.html" %}
-                {% endif %}
-            </li>
+            {% include "blog/includes/posts.html" %}
+        {% empty %}
+            <li>No posts yet.</li>
         {% endfor %}
     </ul>
-
 </section>
 
 

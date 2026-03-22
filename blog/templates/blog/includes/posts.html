@@ -10,7 +10,7 @@
             <a href="{% url 'post-detail' id=post.id %}" style="display:flex; gap:16px; align-items:flex-start; text-decoration:none; color:inherit; flex:1;">
                 <div class="post_content" style="flex:1; font-size:18px;">
                     {% if post.image %}
-                        <img src="{{ post.image_url }}" alt="{{ post.title }}" style="width:320px; max-width:35%; height:auto; object-fit:cover; border-radius:6px; flex-shrink:0;" />
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width:320px; max-width:35%; height:auto; object-fit:cover; border-radius:6px; flex-shrink:0;" />
                     {% endif %}
                     <h3 style="font-size:28px; margin:0 0 8px;">{{ post.title }}</h3>
                     <div class="post-description" style="max-height:72px; overflow:hidden; transition:max-height .2s ease;">
